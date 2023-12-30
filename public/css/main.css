@@ -1,0 +1,38 @@
+body {
+    background-color: #ffffff;
+}
+
+header {
+    text-align: center;
+    height: 100px;
+    padding-top: 1px;
+    background-color: #3399ff;
+    color: #FFFFFF;
+    font-size: x-large;
+}
+
+h3 {
+    margin-top: 2px;
+    text-align: center;
+    background-color: #80bfff;
+}
+
+form {
+    width: 45%;
+    display: inline-block;
+    margin: 20px;
+}
+
+
+.loading {
+    width: 100px;
+    height: auto;
+    display: none;
+}
+
+#messageContainer,
+#connectionContainer {
+
+    color: white;
+    padding: 10px;
+}

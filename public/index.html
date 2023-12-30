@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .form-container {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .form-card {
+            width: 50%;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .step {
+            display: none;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .step.active {
+            display: block;
+        }
+
+        .error-message {
+            color: #dc3545;
+        }
+
+        .success-message {
+            color: #28a745;
+        }
+
+        .progress-bar {
+            height: 20px;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .progress-container {
+            margin-bottom: 2rem;
+            /* Adjust the margin as needed */
+        }
+
+        .btn-container {
+            margin-top: 1.5rem;
+            /* Adjust the margin as needed */
+        }
+
+        /* Add a class for transparent form during loading */
+        .transparent-form {
+            opacity: 0.5;
+            /* Adjust the transparency level as needed */
+            z-index: 1;
+        }
+
+        /* Style for the loading indicator container */
+        #loadingIndicator {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            /* Adjust the background color and transparency */
+            padding: 20px;
+            border-radius: 10px;
+            display: none;
+            z-index: 2;
+        }
+
+        /* Style for the loading image */
+        #loadingIndicator img {
+            width: 50px;
+            /* Adjust the size of the loading image */
+            height: 50px;
+        }
+    </style>
+</head>
+
+<body>
+
+
+
+    <div class="form-container" id="form-container">
+        <div class="form-card bg-light">
+            <h3 class="text-center mb-4 text-primary" id="form-title"><i class="fas fa-user"></i> Personal Information
+            </h3>
+
+            <!-- Add a loading indicator element -->
+            <div id="loadingIndicator" style="display: none;">
+                <img src="img/loading.gif" alt="Loading..." />
+            </div>
+
+
+            <!-- Step 1 - Personal Information -->
+            <div id="step1" class="step active">
+                <form id="step1Form">
+                    <div class="row mb-3">
+                        <div class="col-md-12 mb-3">
+                            <label for="name" class="form-label">Name</label>
+                            <input type="text" class="form-control" id="name" name="name" required>
+                            <div class="error-message" id="error-name"></div>
+                        </div>
+
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6 mb-3">
+                            <label for="email" class="form-label">Email Address</label>
+                            <input type="email" class="form-control" id="email" name="email" required>
+                            <div class="error-message" id="error-email"></div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="phoneNumber" class="form-label">Phone Number</label>
+                            <input type="tel" class="form-control" id="phoneNumber" name="phoneNumber" required>
+                            <div class="error-message" id="error-phoneNumber"></div>
+                        </div>
+                    </div>
+
+
+                    <div class="row mb-3">
+
+                        <div class="col-md-6 mb-3">
+                            <label for="password" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="password" name="password" required>
+                            <div class="error-message" id="error-password"></div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="confirmPassword" class="form-label">Confirm Password</label>
+                            <input type="password" class="form-control" id="confirmPassword" name="confirmPassword"
+                                required>
+                            <div class="error-message" id="error-confirmPassword"></div>
+                        </div>
+
+                    </div>
+
+
+                    <div class="row mb-3">
+
+                        <div class="col-md-12 mb-3">
+                            <label for="businessAddress" class="form-label">Business Address</label>
+                            <input type="text" class="form-control" id="businessAddress" name="businessAddress"
+                                required>
+                            <div class="error-message" id="error-businessAddress"></div>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+
+
+
+                        <div class="col-md-4 mb-3">
+                            <label for="city" class="form-label">City</label>
+                            <input type="text" class="form-control" id="city" name="city" required>
+                            <div class="error-message" id="error-city"></div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="postalCode" class="form-label">Postal Code</label>
+                            <input type="text" class="form-control" id="postalCode" name="postalCode" required>
+                            <div class="error-message" id="error-postalCode"></div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="province" class="form-label">Province</label>
+                            <select class="form-select" id="province" name="province" required>
+                                <option value="Select Province" selected disabled>Select Province</option>
+                                <option value="Alberta">Alberta</option>
+                                <option value="British Columbia">British Columbia</option>
+                                <option value="Manitoba">Manitoba</option>
+                                <option value="New Brunswick">New Brunswick</option>
+                                <option value="Newfoundland and Labrador">Newfoundland and Labrador</option>
+                                <option value="Northwest Territories">Northwest Territories</option>
+                                <option value="Nova Scotia">Nova Scotia</option>
+                                <option value="Nunavut">Nunavut</option>
+                                <option value="Ontario">Ontario</option>
+                                <option value="Prince Edward Island">Prince Edward Island</option>
+                                <option value="Quebec">Quebec</option>
+                                <option value="Saskatchewan">Saskatchewan</option>
+                                <option value="Yukon">Yukon</option>
+                            </select>
+                            <div class="error-message" id="error-province"></div>
+                        </div>
+
+                    </div>
+
+                    <!-- Error message for Step 1 -->
+                    <div class="error-message mt-2 mb-2" id="error-step1"></div>
+                </form>
+            </div>
+
+
+            <!-- Step 2 - Connect your Canada Post account -->
+            <div class="step" id="step2">
+                <form id="step2Form">
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Username</label>
+                        <input type="text" class="form-control" id="username" name="username" value="advanced_compu"
+                            required>
+                        <div class="error-message" id="error-username"></div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="passwordConnect" class="form-label">Password</label>
+                        <input type="password" class="form-control" id="passwordConnect" name="passwordConnect"
+                            value="P@ssp0rt!@#$" required>
+                        <div class="error-message" id="error-passwordConnect"></div>
+                    </div>
+
+                    <!-- Error message for Step 2 -->
+                    <div class="error-message mt-2 mb-2" id="error-step2"></div>
+
+                </form>
+            </div>
+
+            <!-- Step 3 - Communication Method -->
+            <div class="step" id="step3">
+                <form id="step3Form">
+                    <!-- Additional content for the new text -->
+                    <p class="mb-3">We'd like to verify your identity.</p>
+                    <p class="mb-4">To keep your account secure, we need to make sure it's you that's signing in. We'll
+                        send
+                        you a one-time access code that you will use in the next step.</p>
+
+                    <!-- Sub-description with bold -->
+                    <p class="mb-4"><strong>Please tell us how to send this code:</strong></p>
+                    <div id="communicationMethodContainer">
+
+                    </div>
+
+                    <!-- <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="communication" id="emailRadio"
+                                value="email" checked required>
+                            <label class="form-check-label" for="emailRadio">Email</label>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="communication" id="smsRadio" value="sms"
+                                required>
+                            <label class="form-check-label" for="smsRadio">SMS</label>
+                        </div>
+                    </div> -->
+                    <!-- Add a div for error message -->
+                    <div id="error-communication" class="text-danger"></div>
+
+                    <!-- Error message for Step 3 -->
+                    <div class="error-message mt-2 mb-2" id="error-step3"></div>
+                </form>
+            </div>
+
+            <!-- Step 4 - One time verification code -->
+            <div class="step" id="step4">
+                <form id="step4Form">
+                    <!-- Additional content based on the selected communication method in Step 3 -->
+                    <div id="verification-description" class="mb-4"></div>
+
+                    <div class="mb-3">
+                        <label for="accessCode" class="form-label">Access Code</label>
+                        <input type="text" class="form-control" id="accessCode" name="accessCode" required>
+                        <div class="error-message" id="error-accessCode"></div>
+                    </div>
+
+                    <!-- Error message for Step 4 -->
+                    <div class="error-message mt-2 mb-2" id="error-step4"></div>
+                </form>
+            </div>
+
+            <!-- Step 5 - Message Display -->
+            <div class="step" id="step5">
+                <form id="step5Form">
+                    <div class="text-center">
+                        <p>Form submitted successfully!</p>
+                    </div>
+                </form>
+            </div>
+
+
+
+            <div class="progress-container mb-4">
+                <div class="progress">
+                    <div class="progress-bar bg-primary" role="progressbar" style="width: 20%;" aria-valuenow="20"
+                        aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+            </div>
+
+            <!-- Rest of the form content -->
+
+            <div class="text-center btn-container">
+                <button type="button" class="btn btn-secondary me-2" id="prevBtn" onclick="prevStep()"><i
+                        class="fas fa-arrow-left"></i> Back</button>
+                <button type="button" class="btn btn-primary" id="nextBtn" onclick="nextStep()"><i
+                        class="fas fa-user"></i> Sign Up</button>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
+    <!-- Include jQuery from CDN -->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="js/script.js"></script>
+
+    <script>
+        let currentStep = 1;
+
+        enablePrevButton();
+        // Function to enable the previous button
+        function enablePrevButton() {
+            const prevButton = document.getElementById('prevBtn');
+
+            if (currentStep > 1) {
+
+                switch (currentStep) {
+                    case 3:
+                        prevButton.innerHTML = '<i class="fas fa-sign-out-alt"></i> Logout';
+                        prevButton.disabled = false;
+                        break;
+                    case 5:
+                        prevButton.innerHTML = '<i class="fas fa-sign-out-alt"></i> Logout';
+                        prevButton.disabled = false;
+                        break;
+                    default:
+                        // Default text for other steps
+                        prevButton.innerHTML = '<i class="fas fa-arrow-left"></i> Back';
+                        prevButton.disabled = false;
+                }
+
+            } else {
+                prevButton.disabled = true;
+            }
+        }
+
+
+        function showStep(step) {
+            document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+            document.getElementById(`step${step}`).classList.add('active');
+            updateProgressBar(step);
+        }
+
+        function updateProgressBar(step) {
+            const progress = (step - 1) * 25;
+            document.querySelector('.progress-bar').style.width = `${progress}%`;
+        }
+
+        function validateStep1() {
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const phoneNumber = document.getElementById('phoneNumber').value;
+            const businessAddress = document.getElementById('businessAddress').value;
+            const city = document.getElementById('city').value;
+            const postalCode = document.getElementById('postalCode').value;
+            const provinceDropdown = document.getElementById('province').value;
+
+
+            const errorName = document.getElementById('error-name');
+            const errorEmail = document.getElementById('error-email');
+            const errorPassword = document.getElementById('error-password');
+            const errorConfirmPassword = document.getElementById('error-confirmPassword');
+            const errorPhoneNumber = document.getElementById('error-phoneNumber');
+            const errorBusinessAddress = document.getElementById('error-businessAddress');
+            const errorCity = document.getElementById('error-city');
+            const errorPostalCode = document.getElementById('error-postalCode');
+            const errorProvince = document.getElementById('error-province');
+
+            // Reset previous error messages
+            errorName.textContent = '';
+            errorEmail.textContent = '';
+            errorPassword.textContent = '';
+            errorConfirmPassword.textContent = '';
+            errorPhoneNumber.textContent = '';
+            errorBusinessAddress.textContent = '';
+            errorCity.textContent = '';
+            errorPostalCode.textContent = '';
+            errorProvince.textContent = '';
+
+            // Add your validation logic for Step 1 fields
+            if (!name) {
+                errorName.textContent = 'Name is required';
+                return false;
+            }
+
+            if (!email || !isValidEmail(email)) {
+                errorEmail.textContent = 'Enter a valid email address';
+                return false;
+            }
+
+            if (!phoneNumber || !isValidPhoneNumber(phoneNumber)) {
+                errorPhoneNumber.textContent = 'Enter a valid phone number';
+                return false;
+            }
+
+            if (!password) {
+                errorPassword.textContent = 'Password is required';
+                return false;
+            }
+
+            if (password.length < 6) {
+                errorPassword.textContent = 'Password must be at least 6 characters';
+                return false;
+            }
+
+            if (password !== confirmPassword) {
+                errorConfirmPassword.textContent = 'Passwords do not match';
+                return false;
+            }
+
+            if (!businessAddress) {
+                errorBusinessAddress.textContent = 'Business address is required';
+                return false;
+            }
+
+            if (!city) {
+                errorCity.textContent = 'City is required';
+                return false;
+            }
+
+            if (!postalCode) {
+                errorPostalCode.textContent = 'Postal code is required';
+                return false;
+            }
+
+            if (provinceDropdown === 'Select Province' || provinceDropdown === '') {
+                errorProvince.textContent = 'Select a valid province';
+                return false;
+            }
+
+            return true;
+        }
+
+        // Utility function to check if the email is valid
+        function isValidEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+
+        // Utility function to check if the phone number is valid
+        function isValidPhoneNumber(phoneNumber) {
+            const phoneRegex = /^\d{10}$/; // Assuming a 10-digit phone number
+            return phoneRegex.test(phoneNumber);
+        }
+
+        function validateStep2() {
+            const username = document.getElementById('username').value;
+            const passwordConnect = document.getElementById('passwordConnect').value;
+
+            const errorUsername = document.getElementById('error-username');
+            const errorPasswordConnect = document.getElementById('error-passwordConnect');
+
+            // Reset previous error messages
+            errorUsername.textContent = '';
+            errorPasswordConnect.textContent = '';
+
+            // Add your validation logic for Step 2 fields
+            if (!username) {
+                errorUsername.textContent = 'Username is required';
+                return false;
+            }
+
+            if (!passwordConnect) {
+                errorPasswordConnect.textContent = 'Password is required';
+                return false;
+            }
+
+            return true;
+        }
+
+        function validateStep3() {
+            const emailRadio = document.getElementById('emailRadio').checked;
+            const smsRadio = document.getElementById('smsRadio').checked;
+
+            const errorCommunication = document.getElementById('error-communication');
+
+            // Reset previous error message
+            errorCommunication.textContent = '';
+
+            // Add your validation logic for Step 3 fields
+            if (!emailRadio && !smsRadio) {
+                errorCommunication.textContent = 'Select at least one communication method';
+                return false;
+            }
+
+            return true;
+        }
+
+        function validateStep4() {
+            const accessCode = document.getElementById('accessCode').value;
+
+            const errorAccessCode = document.getElementById('error-accessCode');
+
+            // Reset previous error message
+            errorAccessCode.textContent = '';
+
+            // Add your validation logic for Step 4 fields
+            if (!accessCode) {
+                errorAccessCode.textContent = 'Access Code is required';
+                return false;
+            }
+
+            // Validate that accessCode contains exactly 6 digits and accepts only numbers
+            const accessCodeRegex = /^\d{6}$/;
+            if (!accessCodeRegex.test(accessCode)) {
+                errorAccessCode.textContent = 'Access Code must be 6 digits and contain only numbers';
+                return false;
+            }
+
+            return true;
+        }
+
+        function validateCurrentStep() {
+            switch (currentStep) {
+                /*
+                case 1:
+                    return validateStep1();
+                case 2:
+                    return validateStep2();
+                case 3:
+                    return validateStep3();
+                case 4:
+                    return validateStep4();
+                */
+                default:
+                    return true; // Allow navigation for the last step
+            }
+        }
+
+        function updateFormTitle() {
+            const formTitle = document.getElementById('form-title');
+            switch (currentStep) {
+                case 1:
+                    formTitle.innerHTML = '<i class="fas fa-user"></i> Personal Information';
+                    break;
+                case 2:
+                    formTitle.innerHTML = '<i class="fas fa-mail-bulk"></i> Canada Post Account Configuration';
+                    break;
+                case 3:
+                    formTitle.innerHTML = '<i class="fas fa-comments"></i> Communication Method';
+                    break;
+                case 4:
+                    formTitle.innerHTML = '<i class="fas fa-key"></i> One-time Verification Code';
+                    break;
+                case 5:
+                    formTitle.innerHTML = '<i class="fas fa-envelope"></i> Message Display';
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        function nextStep() {
+            if (validateCurrentStep() && currentStep < 5) {
+                // Trigger the loading state
+
+                switch (currentStep) {
+
+                    case 2:
+                        step2Form();
+                        break;
+                    case 3:
+                        step3Form();
+                        break;
+                    case 4:
+                        step4Form();
+                        break;
+                    case 5:
+                        step5Form();
+                        break;
+                    default:
+                        moveToNextStep();
+
+                }
+
+            } else if (validateCurrentStep()) {
+                displaySuccessMessage();
+            }
+
+
+        }
+
+        function showLoading() {
+            // Show loading indicator (you can customize this part)
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            if (loadingIndicator) {
+
+                const form = document.getElementById('form-container');
+                form.classList.add('transparent-form');
+                loadingIndicator.style.display = 'block';
+            }
+        }
+
+        function hideLoading() {
+            // Hide loading indicator (you can customize this part)
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            if (loadingIndicator) {
+                const form = document.getElementById('form-container');
+                form.classList.remove('transparent-form');
+                loadingIndicator.style.display = 'none';
+            }
+        }
+
+        function moveToNextStep() {
+            // Move to the next step
+            currentStep++;
+            showStep(currentStep);
+            updateFormTitle();
+            updateNextButtonText();
+            updateVerificationDescription();
+            enablePrevButton();
+        }
+
+
+
+        function prevStep() {
+            if (currentStep > 1) {
+
+                if (currentStep == 3 || currentStep == 5) {
+
+                    stepLogout();
+
+                } else if (currentStep == 4) {
+                    const response = step4FormBack();
+
+                    if (response) {
+                        currentStep--;
+                        showStep(currentStep);
+                        updateFormTitle();
+                        updateNextButtonText();
+                        enablePrevButton();
+                    }
+
+                } else {
+                    currentStep--;
+                    showStep(currentStep);
+                    updateFormTitle();
+                    updateNextButtonText();
+                    enablePrevButton();
+                }
+
+
+            }
+        }
+
+        function displaySuccessMessage() {
+            const formCard = document.querySelector('.form-card');
+            formCard.innerHTML = `<div class="text-center">
+                           <h3 class="success-message">Form Submitted Successfully!</h3>
+                         </div>`;
+        }
+
+        function updateVerificationDescription() {
+            const communicationMethod = document.querySelector('input[name="communication"]:checked');
+            const verificationDescription = document.getElementById('verification-description');
+
+            if (communicationMethod) {
+
+                const communicationMethodLabelElement = communicationMethod.parentElement.querySelector('label');
+                const communicationMethodLabelText = communicationMethodLabelElement.textContent.trim();
+
+                if (communicationMethod.value == 1) {
+
+                    // Assuming you have a valid email pattern
+                    const emailPattern = /(?<=Email: )\S+/;
+                    // Extract the email from the radio button's value using the regex
+                    const emailMatch = communicationMethodLabelText.match(emailPattern);
+                    // Check if there is a match and extract the email
+                    const email = emailMatch ? emailMatch[0] : null;
+
+
+                    verificationDescription.textContent = `We've sent a one-time access code to the email address ${email}. It will expire in about 30 minutes.`;
+                } else if (communicationMethod.value == 0) {
+
+                    // Assuming you have a valid phone number pattern
+                    const phonePattern = /(?<=Text message: )\S+/;
+
+                    // Extract the phone number from the string using the regex
+                    const phoneMatch = communicationMethodLabelText.match(phonePattern);
+
+                    // Check if there is a match and extract the phone number
+                    const phone = phoneMatch ? phoneMatch[0] : null;
+
+                    verificationDescription.textContent = `We've sent a one-time access code to the mobile number ending in ${phone}. It will expire in about 5 minutes.`;
+                }
+            }
+        }
+
+        // Add event listeners for radio buttons in Step 3
+        const emailRadio = document.getElementById('emailRadio');
+        const smsRadio = document.getElementById('smsRadio');
+
+        if (emailRadio) {
+            emailRadio.addEventListener('change', function () {
+                updateVerificationDescription();
+            });
+        }
+        if (smsRadio) {
+            smsRadio.addEventListener('change', function () {
+                updateVerificationDescription();
+            });
+        }
+        // Function to update the Next button text
+        function updateNextButtonText() {
+            const nextButton = document.getElementById('nextBtn');
+
+            switch (currentStep) {
+                case 1:
+                    nextButton.innerHTML = '<i class="fas fa-user"></i> Sign Up';
+                    break;
+                case 2:
+                    nextButton.innerHTML = '<i class="fas fa-link"></i> Connect';
+                    break;
+                case 3:
+                    nextButton.innerHTML = '<i class="fas fa-envelope"></i> Send Code';
+                    break;
+                case 4:
+                    nextButton.innerHTML = '<i class="fas fa-check-circle"></i> Verify';
+                    break;
+                case 5:
+                    nextButton.innerHTML = '<i class="fas fa-check"></i> Finish';
+                    break;
+                default:
+                    // Default text for other steps
+                    nextButton.innerHTML = '<i class="fas fa-user"></i> Sign Up';
+            }
+        }
+
+    </script>
+</body>
+
+</html>

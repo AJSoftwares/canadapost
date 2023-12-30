@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="css/main.css">
+</head>
+
+<body>
+
+    <form id="canada-post-connection-form">
+        <fieldset>
+            <img src="img/connecting2.gif" alt="connecting" class="loading" id="loading">
+            <h3>Canada Post</h3>
+            <div id="connectionContainer"></div>
+            <br><br>
+            <label>Username</label>
+            <input type="text" placeholder="Username" name="username" id="username" value="advanced_compu" required>
+            <br><br>
+            <label>Password</label>
+            <input type="text" placeholder="Password" name="password" id="password" value="P@ssp0rt!@#$" required>
+            <br><br>
+            <button id="resetbtn" name="resetbtn" type="reset">Reset</button>
+            <button id="loginbtn" name="loginbtn" type="submit">Login</button>
+        </fieldset>
+    </form>
+    <br><br>
+    <form id="canada-post-verification-form">
+        <fieldset id="canada-post-verification-form-fieldset">
+            <h3>We'd like to verify your identity</h3>
+            <p>
+                To keep your account secure, we need to make sure it's you that's signing in. We'll send you a one-time
+                access code that you will use in the next step.
+                <br><br>
+                Please tell us how to send this code
+            </p>
+            <!-- Container for dynamic radio buttons -->
+            <br><br>
+            <div id="messageContainer"></div>
+            <br><br>
+            <div id="communicationContainer"></div>
+            <br><br>
+            <div id="radioContainer"></div>
+            <div id="inputAccessCodeContainer"></div>
+        </fieldset>
+    </form>
+
+    <!-- Include jQuery from CDN -->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="js/script.js"></script>
+
+</body>
+
+</html>
