@@ -1,5 +1,7 @@
 $(document).ready(async function () {
 
+    showLoading();
+
     try {
         // Make an asynchronous API call using fetch
         const response = await fetch('/logout', {
@@ -14,7 +16,7 @@ $(document).ready(async function () {
         console.error('An unexpected error occurred:', error);
     } finally {
         // Hide loading image
-        loadingDiv.style.display = 'none';
+        hideLoading();
     }
 
 
@@ -205,6 +207,8 @@ async function step4Form() {
                 if (data.status == 200) {
 
                     moveToNextStep();
+
+                    showLoading();
                 } else {
 
                     displayStepError(4, data.message);
@@ -283,6 +287,7 @@ async function step4FormBack() {
 
 async function step5Form() {
 
+
     showLoading();
 
     try {
@@ -315,7 +320,6 @@ async function step5Form() {
     } catch (error) {
 
         displayStepError(5, 'An unexpected error occurred: ' + error);
-
 
     } finally {
         // Hide loading image

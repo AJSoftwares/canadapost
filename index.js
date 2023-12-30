@@ -63,6 +63,15 @@ class BrowserController {
         }
     }
 
+    async closeBrowserClose() {
+
+
+        if (this.browser) {
+            await this.browser.close();
+            this.browser = null;
+        }
+    }
+
     getTotalPages() {
         return this.pages.length;
     }
@@ -75,6 +84,9 @@ app.get("/logout", async (req, res) => {
 
     if (browserController.getTotalPages() > 0) {
         await browserController.closeBrowser();
+        res.send({ message: 'Logout', status: 200 });
+    } else {
+        await browserController.closeBrowserClose();
         res.send({ message: 'Logout', status: 200 });
     }
 
@@ -219,7 +231,36 @@ app.post("/login", async (req, res) => {
         //console.log('New URL after clicking the button (2):', newUrl);
         // Check if the new page URL is equal to the current one
         if (newUrl == currentUrl) {
-            res.send({ message: 'Login failed.', status: 400 });
+
+            const RadioButtonSelector = "cpc-radio-control";
+
+
+            // Wait for the selector to appear after clicking the button
+            const RadioButton = await page.waitForSelector(RadioButtonSelector, { timeout: 5000, visible: true })
+                .then(() => true)
+                .catch(() => false);
+
+            if (RadioButton) {
+
+
+                const verifyYourIdentityResult = await page.evaluate(() => {
+
+                    let verifyYourIdentityResultSelector = document.querySelectorAll('.cpc-radio-label');
+                    const verifyYourIdentityArray = [...verifyYourIdentityResultSelector];
+                    return verifyYourIdentityArray.map(h => h.innerText);
+
+
+                });
+
+                res.send(verifyYourIdentityResult);
+
+            } else {
+
+
+
+                res.send({ message: 'Login failed.', status: 400 });
+            }
+
 
             // Your logic goes here for the "if" condition
 
@@ -234,7 +275,7 @@ app.post("/login", async (req, res) => {
 
 
                 // Wait for the selector to appear after clicking the button
-                const RadioButton = await page.waitForSelector(RadioButtonSelector, { timeout: 10000, visible: true })
+                const RadioButton = await page.waitForSelector(RadioButtonSelector, { timeout: 5000, visible: true })
                     .then(() => true)
                     .catch(() => false);
 
@@ -282,6 +323,8 @@ app.post("/login", async (req, res) => {
                     res.send(verifyYourIdentityResult);
                 }
             } else {
+
+
                 res.send({ message: 'Login failed.', status: 400 });
             }
 
@@ -294,7 +337,34 @@ app.post("/login", async (req, res) => {
         //console.log('New URL after clicking the button:', newUrl);
 
         if (newUrl == currentUrl) {
-            res.send({ message: 'Login failed.', status: 400 });
+            const RadioButtonSelector = "cpc-radio-control";
+
+
+            // Wait for the selector to appear after clicking the button
+            const RadioButton = await page.waitForSelector(RadioButtonSelector, { timeout: 5000, visible: true })
+                .then(() => true)
+                .catch(() => false);
+
+            if (RadioButton) {
+
+
+                const verifyYourIdentityResult = await page.evaluate(() => {
+
+                    let verifyYourIdentityResultSelector = document.querySelectorAll('.cpc-radio-label');
+                    const verifyYourIdentityArray = [...verifyYourIdentityResultSelector];
+                    return verifyYourIdentityArray.map(h => h.innerText);
+
+
+                });
+
+                res.send(verifyYourIdentityResult);
+
+            } else {
+
+
+
+                res.send({ message: 'Login failed.', status: 400 });
+            }
         } else {
 
             // Check if the new URL contains a specific string
@@ -306,7 +376,7 @@ app.post("/login", async (req, res) => {
 
 
                 // Wait for the selector to appear after clicking the button
-                const RadioButton = await page.waitForSelector(RadioButtonSelector, { timeout: 10000, visible: true })
+                const RadioButton = await page.waitForSelector(RadioButtonSelector, { timeout: 5000, visible: true })
                     .then(() => true)
                     .catch(() => false);
 
@@ -462,7 +532,7 @@ app.post("/accesscode", async (req, res) => {
         const ManageDashoardSelector = '.sso-username';
 
         // Wait for the selector to appear after clicking the button
-        const ManageDashoard = await page2.waitForSelector(ManageDashoardSelector, { timeout: 10000, visible: true })
+        const ManageDashoard = await page2.waitForSelector(ManageDashoardSelector, { timeout: 5000, visible: true })
             .then(() => true)
             .catch(() => false);
 
