@@ -63,11 +63,17 @@ async function step2Form() {
             if (response.ok) {
                 const data = await response.json();
 
-                //console.log(data);
-                // Call the function with the sample array
-                generateRadioButtons(data);
+                if (data.status == 400) {
+                    displayStepError(2, data.message);
+                } else {
+                    //console.log(data);
+                    // Call the function with the sample array
+                    generateRadioButtons(data);
 
-                moveToNextStep();
+                    moveToNextStep();
+                }
+
+
 
             } else {
 
@@ -274,6 +280,48 @@ async function step4FormBack() {
 
 }
 
+
+async function step5Form() {
+
+    showLoading();
+
+    try {
+        // Make an asynchronous API call using fetch
+        const response = await fetch('/profile', {
+            method: 'GET',
+        });
+
+        if (response.ok) {
+            // Additional logic if needed
+            const data = await response.json();
+
+            if (data.status == 200) {
+
+                const customerNumber = document.getElementById('customerNumber');
+                customerNumber.textContent = data.customerInfo.customerNumber;
+
+                const contractNumber = document.getElementById('contractNumber');
+                contractNumber.textContent = data.customerInfo.contractNumber;
+
+            } else {
+                displayStepError(5, 'API Error: ' + response.statusText);
+            }
+
+        } else {
+
+            displayStepError(5, 'API Error: ' + response.statusText);
+
+        }
+    } catch (error) {
+
+        displayStepError(5, 'An unexpected error occurred: ' + error);
+
+
+    } finally {
+        // Hide loading image
+        hideLoading();
+    }
+}
 
 
 function displayStepError(step, errorMessage) {

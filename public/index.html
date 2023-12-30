@@ -95,6 +95,29 @@
             /* Adjust the size of the loading image */
             height: 50px;
         }
+
+        .grid-layout {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            grid-gap: 10px;
+        }
+
+        .grid-row {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            grid-gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .grid-column {
+            display: flex;
+            align-items: center;
+        }
+
+        label {
+            font-weight: bold;
+            margin-right: 10px;
+        }
     </style>
 </head>
 
@@ -116,6 +139,7 @@
             <!-- Step 1 - Personal Information -->
             <div id="step1" class="step active">
                 <form id="step1Form">
+
                     <div class="row mb-3">
                         <div class="col-md-12 mb-3">
                             <label for="name" class="form-label">Name</label>
@@ -287,9 +311,23 @@
             <!-- Step 5 - Message Display -->
             <div class="step" id="step5">
                 <form id="step5Form">
-                    <div class="text-center">
-                        <p>Form submitted successfully!</p>
+                    <div class="grid-row">
+                        <div class="grid-column">
+                            <label for="customerNumber">Customer Number</label>
+                        </div>
+                        <div class="grid-column">
+                            <span id="customerNumber"></span>
+                        </div>
                     </div>
+                    <div class="grid-row">
+                        <div class="grid-column">
+                            <label for="contractNumber">Contract Number</label>
+                        </div>
+                        <div class="grid-column">
+                            <span id="contractNumber"></span>
+                        </div>
+                    </div>
+
                 </form>
             </div>
 
@@ -561,7 +599,7 @@
                     formTitle.innerHTML = '<i class="fas fa-key"></i> One-time Verification Code';
                     break;
                 case 5:
-                    formTitle.innerHTML = '<i class="fas fa-envelope"></i> Message Display';
+                    formTitle.innerHTML = '<i class="fas fa-user"></i> Canada Post Account Information';
                     break;
                 default:
                     break;
@@ -622,11 +660,16 @@
         function moveToNextStep() {
             // Move to the next step
             currentStep++;
+
             showStep(currentStep);
             updateFormTitle();
             updateNextButtonText();
             updateVerificationDescription();
             enablePrevButton();
+
+            if (currentStep == 5) {
+                step5Form();
+            }
         }
 
 

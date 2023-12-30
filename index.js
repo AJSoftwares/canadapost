@@ -80,6 +80,46 @@ app.get("/logout", async (req, res) => {
 
 })
 
+app.get("/profile", async (req, res) => {
+
+    //const page = await browser.newPage();
+    const page3 = await browserController.createPage();
+
+    // Navigate the page to a URL
+    await page3.goto('https://www.canadapost-postescanada.ca/oss-sss/en/profile', {
+        timeout: 0,
+        waitUntil: ['load', 'domcontentloaded', 'networkidle0', 'networkidle2']
+    });
+
+
+    // Extract Customer number and Contract number
+    const customerInfo = await page3.evaluate(() => {
+        const elements = document.querySelectorAll('cpc-customer-info dl dt');
+        const result = {};
+
+        elements.forEach((element) => {
+            const textContent = element.textContent.trim();
+            switch (textContent) {
+                case 'Customer number':
+                    result.customerNumber = element.nextElementSibling.textContent.trim();
+                    break;
+                case 'Contract number':
+                    result.contractNumber = element.nextElementSibling.textContent.trim();
+                    break;
+                // Add more cases as needed for other data you want to extract
+            }
+        });
+
+        return result;
+    });
+
+    /*const customer_number = "0008744705";
+    const contract_number = "0043610541";
+*/
+
+    res.send({ customerInfo: { customerNumber: customerInfo.customerNumber, contractNumber: customerInfo.contractNumber }, status: 200 });
+})
+
 
 app.get("/back", async (req, res) => {
 
@@ -162,59 +202,166 @@ app.post("/login", async (req, res) => {
     const SignInResultSelector = '.f-button-group > button' /* '.f-button-group > button'*/;
     // await page.click(searchSignInResultSelector);
 
+
+    // Get the current page URL
+    const currentUrl = page.url();
+
     // does work
     await page.evaluate((SignInResultSelector) => document.querySelector(SignInResultSelector).click(), SignInResultSelector);
 
-    const RadioButtonSelector = "cpc-radio-control";
+
+    try {
+        // Wait for the navigation to complete with a longer timeout
+        await page.waitForNavigation({ timeout: 5000, waitUntil: 'domcontentloaded' });
+
+        // Get the new page URL after clicking the button
+        const newUrl = page.url();
+        //console.log('New URL after clicking the button (2):', newUrl);
+        // Check if the new page URL is equal to the current one
+        if (newUrl == currentUrl) {
+            res.send({ message: 'Login failed.', status: 400 });
+
+            // Your logic goes here for the "if" condition
+
+        } else {
+
+            // Check if the new URL contains a specific string
+            const targetString = 'https://sso-osu.canadapost-postescanada.ca/pfe-pap/en/profile/mfa';
+            const targetString2 = 'https://www.canadapost-postescanada.ca/cpc/en/home.page';
+            if (newUrl.includes(targetString) || newUrl.includes(targetString2)) {
+
+                const RadioButtonSelector = "cpc-radio-control";
 
 
-    // Wait for the selector to appear after clicking the button
-    const RadioButton = await page.waitForSelector(RadioButtonSelector, { timeout: 10000, visible: true })
-        .then(() => true)
-        .catch(() => false);
+                // Wait for the selector to appear after clicking the button
+                const RadioButton = await page.waitForSelector(RadioButtonSelector, { timeout: 10000, visible: true })
+                    .then(() => true)
+                    .catch(() => false);
 
-    if (RadioButton) {
+                if (RadioButton) {
 
-        // page2.click(EditProfileResultSelector);
-        // page2.waitForNavigation();
+                    // page2.click(EditProfileResultSelector);
+                    // page2.waitForNavigation();
 
-        const verifyYourIdentityResult = await page.evaluate(() => {
+                    const verifyYourIdentityResult = await page.evaluate(() => {
 
-            let verifyYourIdentityResultSelector = document.querySelectorAll('.cpc-radio-label');
-            const verifyYourIdentityArray = [...verifyYourIdentityResultSelector];
-            return verifyYourIdentityArray.map(h => h.innerText);
-
-
-        });
-
-        res.send(verifyYourIdentityResult);
-
-    } else {
-
-        // await page.waitForNavigation();
-
-        const page2 = await browserController.createPage();
-
-        await page2.goto('https://sso-osu.canadapost-postescanada.ca/pfe-pap/en/profile/mfa', {
-            timeout: 0,
-            waitUntil: ['load', 'domcontentloaded', 'networkidle0', 'networkidle2']
-        });
+                        let verifyYourIdentityResultSelector = document.querySelectorAll('.cpc-radio-label');
+                        const verifyYourIdentityArray = [...verifyYourIdentityResultSelector];
+                        return verifyYourIdentityArray.map(h => h.innerText);
 
 
-        // page2.click(EditProfileResultSelector);
-        // page2.waitForNavigation();
+                    });
 
-        const verifyYourIdentityResult = await page2.evaluate(() => {
+                    res.send(verifyYourIdentityResult);
 
-            let verifyYourIdentityResultSelector = document.querySelectorAll('.cpc-radio-label');
-            const verifyYourIdentityArray = [...verifyYourIdentityResultSelector];
-            return verifyYourIdentityArray.map(h => h.innerText);
+                } else {
+
+                    // await page.waitForNavigation();
+
+                    const page2 = await browserController.createPage();
+
+                    await page2.goto('https://sso-osu.canadapost-postescanada.ca/pfe-pap/en/profile/mfa', {
+                        timeout: 0,
+                        waitUntil: ['load', 'domcontentloaded', 'networkidle0', 'networkidle2']
+                    });
 
 
-        });
 
-        res.send(verifyYourIdentityResult);
+                    // page2.click(EditProfileResultSelector);
+                    // page2.waitForNavigation();
+
+                    const verifyYourIdentityResult = await page2.evaluate(() => {
+
+                        let verifyYourIdentityResultSelector = document.querySelectorAll('.cpc-radio-label');
+                        const verifyYourIdentityArray = [...verifyYourIdentityResultSelector];
+                        return verifyYourIdentityArray.map(h => h.innerText);
+
+
+                    });
+
+                    res.send(verifyYourIdentityResult);
+                }
+            } else {
+                res.send({ message: 'Login failed.', status: 400 });
+            }
+
+            // Your logic goes here for the "else" condition
+
+        }
+    } catch (error) {
+        //console.error('Navigation timeout exceeded. Proceeding to get the new URL.');
+        const newUrl = page.url();
+        //console.log('New URL after clicking the button:', newUrl);
+
+        if (newUrl == currentUrl) {
+            res.send({ message: 'Login failed.', status: 400 });
+        } else {
+
+            // Check if the new URL contains a specific string
+            const targetString = 'https://sso-osu.canadapost-postescanada.ca/pfe-pap/en/profile/mfa';
+            const targetString2 = 'https://www.canadapost-postescanada.ca/cpc/en/home.page';
+            if (newUrl.includes(targetString) || newUrl.includes(targetString2)) {
+
+                const RadioButtonSelector = "cpc-radio-control";
+
+
+                // Wait for the selector to appear after clicking the button
+                const RadioButton = await page.waitForSelector(RadioButtonSelector, { timeout: 10000, visible: true })
+                    .then(() => true)
+                    .catch(() => false);
+
+                if (RadioButton) {
+
+                    // page2.click(EditProfileResultSelector);
+                    // page2.waitForNavigation();
+
+                    const verifyYourIdentityResult = await page.evaluate(() => {
+
+                        let verifyYourIdentityResultSelector = document.querySelectorAll('.cpc-radio-label');
+                        const verifyYourIdentityArray = [...verifyYourIdentityResultSelector];
+                        return verifyYourIdentityArray.map(h => h.innerText);
+
+
+                    });
+
+                    res.send(verifyYourIdentityResult);
+
+                } else {
+
+                    // await page.waitForNavigation();
+
+                    const page2 = await browserController.createPage();
+
+                    await page2.goto('https://sso-osu.canadapost-postescanada.ca/pfe-pap/en/profile/mfa', {
+                        timeout: 0,
+                        waitUntil: ['load', 'domcontentloaded', 'networkidle0', 'networkidle2']
+                    });
+
+
+
+                    // page2.click(EditProfileResultSelector);
+                    // page2.waitForNavigation();
+
+                    const verifyYourIdentityResult = await page2.evaluate(() => {
+
+                        let verifyYourIdentityResultSelector = document.querySelectorAll('.cpc-radio-label');
+                        const verifyYourIdentityArray = [...verifyYourIdentityResultSelector];
+                        return verifyYourIdentityArray.map(h => h.innerText);
+
+
+                    });
+
+                    res.send(verifyYourIdentityResult);
+                }
+
+            } else {
+                res.send({ message: 'Login failed.', status: 400 });
+            }
+
+        }
+
     }
+
 
 
 
@@ -386,7 +533,14 @@ app.post("/accesscode", async (req, res) => {
                         // Your logic goes here for the "if" condition
 
                     } else {
-                        res.send({ message: 'Success', status: 200 });
+                        // Check if the new URL contains a specific string
+                        const targetString = 'https://www.canadapost-postescanada.ca/cpc/en/home.page';
+                        const targetString2 = 'https://sso-osu.canadapost-postescanada.ca/pfe-pap/en/profile/mfa';
+                        if (newUrl.includes(targetString) || newUrl.includes(targetString2)) {
+                            res.send({ message: 'Success', status: 200 });
+                        } else {
+                            res.send({ message: 'Sorry, but this code did not work. It could be incorrect, or may have expired. Please try again.', status: 400 });
+                        }
 
                         // Your logic goes here for the "else" condition
 
@@ -395,14 +549,14 @@ app.post("/accesscode", async (req, res) => {
                     //console.error('Navigation timeout exceeded. Proceeding to get the new URL.');
                     const newUrl = page2.url();
                     //console.log('New URL after clicking the button:', newUrl);
-
                     if (newUrl == currentUrl) {
                         res.send({ message: 'Sorry, but this code did not work. It could be incorrect, or may have expired. Please try again.', status: 400 });
                     } else {
 
                         // Check if the new URL contains a specific string
                         const targetString = 'https://www.canadapost-postescanada.ca/cpc/en/home.page';
-                        if (newUrl.includes(targetString)) {
+                        const targetString2 = 'https://sso-osu.canadapost-postescanada.ca/pfe-pap/en/profile/mfa';
+                        if (newUrl.includes(targetString) || newUrl.includes(targetString2)) {
                             res.send({ message: 'Success', status: 200 });
                         } else {
                             res.send({ message: 'Sorry, but this code did not work. It could be incorrect, or may have expired. Please try again.', status: 400 });
