@@ -237,14 +237,14 @@
                 <form id="step2Form">
                     <div class="mb-3">
                         <label for="username" class="form-label">Username</label>
-                        <input type="text" class="form-control" id="username" name="username" value="advanced_compu"
+                        <input type="text" class="form-control" id="username" name="username" value=""
                             required>
                         <div class="error-message" id="error-username"></div>
                     </div>
                     <div class="mb-3">
                         <label for="passwordConnect" class="form-label">Password</label>
                         <input type="password" class="form-control" id="passwordConnect" name="passwordConnect"
-                            value="P@ssp0rt!@#$" required>
+                            value="" required>
                         <div class="error-message" id="error-passwordConnect"></div>
                     </div>
 
@@ -568,7 +568,7 @@
 
         function validateCurrentStep() {
             switch (currentStep) {
-                /*
+
                 case 1:
                     return validateStep1();
                 case 2:
@@ -577,7 +577,7 @@
                     return validateStep3();
                 case 4:
                     return validateStep4();
-                */
+
                 default:
                     return true; // Allow navigation for the last step
             }
@@ -587,10 +587,10 @@
             const formTitle = document.getElementById('form-title');
             switch (currentStep) {
                 case 1:
-                    formTitle.innerHTML = '<i class="fas fa-user"></i> Personal Information';
+                    formTitle.innerHTML = '<i class="fas fa-user"></i> Account Information';
                     break;
                 case 2:
-                    formTitle.innerHTML = '<i class="fas fa-mail-bulk"></i> Canada Post Account Configuration';
+                    formTitle.innerHTML = '<i class="fas fa-mail-bulk"></i> Connect Canada Post Account';
                     break;
                 case 3:
                     formTitle.innerHTML = '<i class="fas fa-comments"></i> Communication Method';
