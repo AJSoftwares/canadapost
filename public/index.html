@@ -237,14 +237,14 @@
                 <form id="step2Form">
                     <div class="mb-3">
                         <label for="username" class="form-label">Username</label>
-                        <input type="text" class="form-control" id="username" name="username" value=""
+                        <input type="text" class="form-control" id="username" name="username" value="advanced_compu"
                             required>
                         <div class="error-message" id="error-username"></div>
                     </div>
                     <div class="mb-3">
                         <label for="passwordConnect" class="form-label">Password</label>
                         <input type="password" class="form-control" id="passwordConnect" name="passwordConnect"
-                            value="" required>
+                            value="P@ssp0rt!@#$" required>
                         <div class="error-message" id="error-passwordConnect"></div>
                     </div>
 
@@ -569,7 +569,7 @@
         function validateCurrentStep() {
             switch (currentStep) {
 
-                case 1:
+              /*  case 1:
                     return validateStep1();
                 case 2:
                     return validateStep2();
@@ -577,7 +577,7 @@
                     return validateStep3();
                 case 4:
                     return validateStep4();
-
+*/
                 default:
                     return true; // Allow navigation for the last step
             }
